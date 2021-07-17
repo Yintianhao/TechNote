@@ -1,0 +1,22 @@
+## Bean的生命周期
+
+1，实例化bean对象，这个时候的bean的对象是十分低级的，基本不能被我们使用，因为连最基本的属性都没有设置，可以理解为连@Autowired注解都没有解析。
+
+2，填充属性，当做完这一步，bean的对象基本是完整了，可以理解为@Autowired注解已经解析完毕了，依赖注入已经完成了。
+
+3，如果bean实现了BeanNameAware接口，则调用setBeanName方法
+
+4，如果bean实现了BeanClassLoaderAware接口，则调用setBeanClassLoader方法
+
+5，如果bean实现了BeanFactoryAware接口，则调用setBeanFactory方法
+
+6，调用BeanPostProcessor的postProcessBeforeInitialization方法
+
+7，如果bean实现了InitializationBean接口，则调用Bean的afterPropertiesSet方法
+
+8，如果bean定义了init-method方法，那么调用init-method方法
+
+9，调用BeanPostProcessor的postProcessAfterInitialization方法，当完成这一步，bean已经准备就绪了，一直存储在应用上下文（ApplicationContext）中，直到被销毁。
+
+10，如果应用上下文被销毁了，如果bean实现了DisposableBean接口，则调用destroy方法，如果bean定义了destroy-method，申明了销毁方法，则调用该方法。
+

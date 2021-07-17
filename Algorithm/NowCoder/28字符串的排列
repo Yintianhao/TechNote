@@ -1,0 +1,54 @@
+/**
+输入一个字符串,按字典序打印出该字符串中字符的所有排列。例如输入字符串abc,则打印出由字符a,b,c所能排列出来的所有字符串abc,acb,bac,bca,cab和cba。
+输入描述:
+输入一个字符串,长度不超过9(可能有字符重复),字符只包括大小写字母。
+*/
+
+/*
+刚开始我就走了弯路，因为按照我思路，我是先把字符串里面的字母排序，然后在全排列，后来想了很久没有思绪，
+之后看了看讨论区，才发现Collections.sort就可以进行字典序排序了
+那么问题就简化了，只需要求全排列就行了，问题就是，全排列怎么排
+我们需可以看作两个过程，一个是过程是固定一个字符，然后，再排后面的字符
+这样就能把所有的排列求出来了
+*/
+
+import java.util.*;
+public class Solution {
+    private ArrayList<String> res = new ArrayList<>();
+    public ArrayList<String> Permutation(String str) {
+        //abc-->abc,acb,bac,bca,cab和cba。
+        if (str.length()==0)
+            return this.res;
+        else {
+            convertString(str,0);
+            Collections.sort(this.res);
+        }
+        return this.res;
+    }
+    public void convertString(String str,int start){
+        if (start==str.length()-1){
+        //如果start位到了字符串的尾部，那么结束递归
+            res.add(str);
+            return ;
+        }
+        for (int i = start;i<str.length();i++){
+            if (i!=start&&str.charAt(i)==str.charAt(start))
+            //如果和start位的字符相同并且不是start位，跳过
+                continue;
+            if(i!=start)//这里是为了减少调用swap函数的时间，两个一样的字符调换没意义
+            str = swap(str, i,start);
+            convertString(str,start+1);//再次递归，start向后移
+            if(i!=start)
+            str = swap(str,i,start);
+        }
+    }
+    public String swap(String str,int i,int j){
+    //交换两个位，介于Java的特点，交换后返回字符串，避免不必要的麻烦
+        char[] arr = str.toCharArray();
+        char tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+        return String.valueOf(arr);
+    }
+}
+

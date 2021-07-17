@@ -1,0 +1,40 @@
+### 每日一题 121 买卖股票最好的时机
+#### 自己只会写暴力 花了300多ms哈哈哈 DP不会写 
+#### 暴力:
+```
+class Solution {
+    public int maxProfit(int[] prices) {
+        int ans = 0;
+		for (int i = 0; i < prices.length; i++) {
+			for(int j = i+1;j < prices.length;j++) {
+				if (prices[i]>prices[j]) {
+					continue;
+				}else {
+					if (ans<prices[j]-prices[i]) {
+						ans = prices[j]-prices[i];
+					}
+				}
+			}
+		}
+		return ans;
+    }
+}
+```
+#### 动态规划 
+```
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices.length<=1) {
+			return 0;
+		}
+		int ans = 0;
+		int min = prices[0];
+		for (int i = 0; i < prices.length; i++) {
+    //宗旨就是最大的卖出-最小的买入
+			ans = Math.max(ans, prices[i]-min);
+			min  = Math.min(min, prices[i]);
+		}
+		return ans;
+    }
+}
+```

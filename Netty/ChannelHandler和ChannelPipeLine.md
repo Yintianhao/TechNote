@@ -1,0 +1,23 @@
+### ChannelHandler和ChannelPipeline
+
+这两个组件组成Netty中的逻辑处理链路。
+
+#### ChannelHandler
+
+- Channel生命周期
+
+一个Channel自然是有他的生命周期的，分别是ChannelUnregistered，代表Channel已经被创建，但是还没有注册到事件循环(EventLoop)中。ChannelRegistered，表示已经注册到了EventLoop中，ChannelActive，处于活动状态，ChannelInactive，表示没有连接到远程节点。
+
+- ChannelHandler生命周期
+
+同样对于ChannelHandler来说也有生命周期，分别是HandlerAdded，当把ChannelHandler添加到ChannelPipeline中的时候被调用，HandlerRemoved，当ChannelPipeline移除ChannelHandler的时候被调用，ExceptionCaught，处理过程中发生异常的时候调用。
+
+- 和Channel生命周期息息相关的接口- ChannelIn/OutboundHandler
+- ChannelPipeline接口
+
+ChannelPipeline是一个拦截流经Channel的入站和出站事件的ChannelHandler的实例链条，另外需要提一嘴ChannelHandlerContext，这个类使得ChannelHandler和它所在的ChannelPipeline以及其他的ChannelHandler进行交互，ChannelHandler可以通知其所属的ChannelPipeline中的下一个ChannelHandler，甚至可以动态修改其自身所在的ChannelPipeline，这个类的存在使得许多的业务逻辑可以灵活地调整，我们知道ChannelHandler在ChannelPipeline是一条链，而通过ChannelHandlerContext可以获取到某一个Handler，如果获取该Handler对应的channel，例如写入一条数据，那么这里就会触发一个写入时间，从下一个Handler这个写入事件会流经后面的所有Handler，这就有效的绕过了前面的Handler，因为前面的Handler可能是对这个时间不感兴趣的。
+
+
+
+
+

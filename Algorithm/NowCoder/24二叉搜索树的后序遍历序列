@@ -1,0 +1,28 @@
+/**
+输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历的结果。如果是则输出Yes,否则输出No。假设输入的数组的任意两个数字都互不相同。
+*/
+//二叉搜索树的特点,之前一直自己搞错了,以为根节点的左子树会存在比他大的数字
+//这里序列最后一个就是跟节点,然后找到比他小的第一个数,从这个数字往前就是左子树,往后倒根节点之前就是右子树
+//然后根据这个规律再分,即递归,解决问题,结束条件就是要么子树出现比自己大的数,要么start>=end,此时说明左子树全部小于根节点,右子树全部大于根节点
+public class Solution {
+    //判断是否为二叉搜索树的后序遍历序列
+    public boolean VerifySquenceOfBST(int [] sequence) {
+        if (sequence.length==0)
+            return false;
+        if (sequence.length==1)
+            return true;
+        return is(sequence,0,sequence.length-1);
+    }
+    public boolean is(int[] arr,int start,int end){
+        int i = end-1;
+        if (start>=end)
+            return true;
+        while (i>=start&&arr[i]>arr[end]){
+            i--;
+        }
+        for (int j = start;j < i;j++)
+            if (arr[j]>arr[end])
+                return false;
+        return is(arr,start,i-1)&&is(arr,i+1,end-1);
+    }
+}

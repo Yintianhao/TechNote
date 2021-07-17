@@ -1,0 +1,84 @@
+/**
+输入一个复杂链表（每个节点中有节点值，以及两个指针，一个指向下一个节点，另一个特殊指针指向任意一个节点），
+返回结果为复制后复杂链表的head。（注意，输出结果中请不要返回参数中的节点引用，否则判题程序会直接返回空）
+*/
+//第一种办法
+import java.util.*;
+public class Solution {
+    public RandomListNode Clone(RandomListNode pHead)
+    {
+        if (pHead==null)
+            return null;
+        RandomListNode current = pHead;
+        //将复制的节点插入
+        while (current!=null){
+            RandomListNode clone = new RandomListNode(current.label);
+            RandomListNode next  = current.next;
+            current.next = clone;
+            clone.next = next;
+            current = next;
+        }
+        //将随机节点加入
+        current = pHead;
+        while (current!=null){
+            current.next.random = current.random==null?null:current.random.next;//指向新的随机节点
+            current = current.next.next;
+        }
+        //拆分
+        current = pHead;
+        RandomListNode res = pHead.next;
+        while (current!=null){
+            RandomListNode clone = current.next;
+            current.next = clone.next;
+            clone.next = clone.next==null?null:clone.next.next;
+            current = current.next;
+        }
+        return res;
+    }
+    //第二种办法
+    import java.util.*;
+public class Solution {
+    public RandomListNode Clone(RandomListNode pHead)
+    {
+        HashMap<Integer,RandomListNode> randomList = new HashMap<>();
+        HashMap<Integer,RandomListNode> newList = new HashMap<>();
+        HashMap<RandomListNode,Integer> oldList = new HashMap<>();
+        RandomListNode result = pHead;
+        if (pHead == null)
+            return pHead;
+        if (pHead.next == null){
+            RandomListNode it = new RandomListNode(pHead.label);
+            if (pHead.random!=null){
+                it.random = it;
+            }
+            return it;
+        }
+        RandomListNode res = pHead;
+        int count = 0;
+        while (res!=null){
+            randomList.put(count,res.random);
+            oldList.put(res,count);
+            RandomListNode node = new RandomListNode(res.label);
+            newList.put(count,node);
+            if (count==0)
+                result = node;
+            res = res.next;
+            count++;
+        }
+        count = 0;//归零
+        res = pHead;
+        while (res!=null){
+            if (count>0)
+                newList.get(count-1).next = newList.get(count);
+            if (oldList.get(randomList.get(count))!=null){
+                int random = oldList.get(randomList.get(count));
+                newList.get(count).random = newList.get(random);
+            }else {
+                newList.get(count).random = null;
+            }
+            res = res.next;
+            count++;
+        }
+        return result;
+    }
+}

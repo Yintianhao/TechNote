@@ -1,0 +1,73 @@
+/**
+输入一颗二叉树的跟节点和一个整数，打印出二叉树中结点值的和为输入整数的所有路径。
+路径定义为从树的根结点开始往下一直到叶结点所经过的结点
+形成一条路径。(注意: 在返回值的list中，数组长度大的数组靠前)
+*/
+//要明白的是路径是从根节点到叶子节点的路径,也就是说到节点没有左右子树为止,之前就是因为这个原因做错了
+//另外还有一个回退的步骤,也就是每次遍历结束之后,需要移除子数组中的最后一个数字,以此来模拟回退到父节点
+//之前一直纠结为什么每次递归之后子数组为什么不清空,后来才想到每次都回退了,所以就算根节点的左子树不符合条件
+//遍历右子树的时候还是回退到了根节点的位置
+import java.util.ArrayList;
+/**
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+    
+    }
+
+}
+*/
+//我的解答,还不够精简
+public class Solution {
+   private ArrayList<ArrayList<Integer>> all = new ArrayList<>();
+   private ArrayList<Integer> path = new ArrayList<>();
+   public ArrayList<ArrayList<Integer>> FindPath(TreeNode root,int target) {
+        int sum = 0;
+        if (root==null)
+            return all;
+        sum = sum + root.val; 
+        path.add(root.val);
+        if (sum==target&&root.left==null&&root.right==null)
+            //一直到叶节点
+            all.add(new ArrayList<Integer>(path));
+        FindPath(root.left,target,sum);
+        FindPath(root.right,target,sum);
+        return all;
+
+    }
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root,int target,int sum) {
+        if (root==null)
+            return all;
+        sum = sum + root.val;
+        path.add(root.val);
+        if (sum==target&&root.left==null&&root.right==null)
+            all.add(new ArrayList<Integer>(path));
+        FindPath(root.left,target,sum);
+        FindPath(root.right, target,sum);
+        path.remove(path.size()-1);
+        return all;
+    }
+}
+//牛客大佬的解答,跟我的不同他没有sum,而是target直接减节点值,这样更好
+链接：https://www.nowcoder.com/questionTerminal/b736e784e3e34731af99065031301bca
+来源：牛客网
+
+public class Solution {
+    private ArrayList<ArrayList<Integer>> listAll = new ArrayList<ArrayList<Integer>>();
+    private ArrayList<Integer> list = new ArrayList<Integer>();
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root,int target) {
+        if(root == null) return listAll;
+        list.add(root.val);
+        target -= root.val;
+        if(target == 0 && root.left == null && root.right == null)
+            listAll.add(new ArrayList<Integer>(list));
+        FindPath(root.left, target);
+        FindPath(root.right, target);
+        list.remove(list.size()-1);
+        return listAll;
+    }
+}

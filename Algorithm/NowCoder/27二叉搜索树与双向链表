@@ -1,0 +1,47 @@
+/**
+输入一棵二叉搜索树，将该二叉搜索树转换成一个排序的双向链表。要求不能创建任何新的结点，只能调整树中结点指针的指向。
+*/
+//第一种
+//参考讲解,还需消化https://www.cnblogs.com/keedor/p/4467040.html
+public class TreeNode {
+    int val = 0;
+    TreeNode left = null;
+    TreeNode right = null;
+
+    public TreeNode(int val) {
+        this.val = val;
+
+    }
+
+}
+*/
+public class Solution {
+    //二叉搜索树和双向链表
+    public TreeNode Convert(TreeNode pRootOfTree) {
+        if (pRootOfTree==null)
+            return null;
+        if (pRootOfTree.right==null&&pRootOfTree.left==null)
+            return pRootOfTree;
+        TreeNode last = null;
+        TreeNode res = Convert(pRootOfTree,last);
+        //返回链表的最后一个节点,需要重新移动到表头
+        while(res.left!=null){
+            res = res.left;
+        }
+        return res;
+    }
+    public TreeNode Convert(TreeNode root,TreeNode last){
+        if (root==null)
+            return last;
+        TreeNode current = root;
+        if (current.left!=null)
+            last = Convert(current.left,last);
+        current.left = last;
+        if (last!=null)
+            last.right = current;
+        last = current;
+        if (current.right!=null)
+            last = Convert(current.right,last);
+        return last;
+    }
+}
